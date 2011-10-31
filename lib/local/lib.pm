@@ -16,14 +16,14 @@ our $VERSION = '1.004001'; # 1.4.1
 sub import {
   my ($class, @args) = @_;
 
-  # The path is required, but last in the list, so we pop, not shift here. 
+  # The path is required, but last in the list, so we pop, not shift here.
   my $path = pop @args;
   $path = $class->resolve_path($path);
   $class->setup_local_lib_for($path);
 
   # Handle the '--self-contained' option
-  my $flag = shift @args;  
-  no warnings 'uninitialized'; # the flag is optional 
+  my $flag = shift @args;
+  no warnings 'uninitialized'; # the flag is optional
   # make sure fancy dashes cause an error
   if ($flag =~ /−/) {
       die <<'DEATH';
@@ -36,7 +36,7 @@ dashes with normal minus signs.
 DEATH
   }
   if ($flag eq '--self-contained') {
-    # The only directories that remain are those that we just defined and those where core modules are stored. 
+    # The only directories that remain are those that we just defined and those where core modules are stored.
     @INC = ($Config::Config{privlibexp}, $Config::Config{archlibexp}, split ':', $ENV{PERL5LIB});
   }
   elsif (defined $flag) {
@@ -71,7 +71,7 @@ sub pipeline {
 package local::lib;
 
 { package Foo; sub foo { -$_[1] } sub bar { $_[1]+2 } sub baz { $_[1]+3 } }
-my $foo = bless({}, 'Foo');                                                 
+my $foo = bless({}, 'Foo');
 Test::More::ok($foo->${pipeline qw(foo bar baz)}(10) == -15);
 
 =end testing
@@ -335,7 +335,7 @@ From the shell -
   # Install LWP and it's missing dependencies to the 'my_lwp' directory
   perl -MCPAN -Mlocal::lib=my_lwp -e 'CPAN::install(LWP)'
 
-  # Install LWP and *all non-core* dependencies to the 'my_lwp' directory 
+  # Install LWP and *all non-core* dependencies to the 'my_lwp' directory
   perl -MCPAN -Mlocal::lib=--self-contained,my_lwp -e 'CPAN::install(LWP)'
 
   # Just print out useful shell commands
@@ -368,7 +368,7 @@ You can also pass --boostrap=~/foo to get a different location -
 
   $ echo 'eval $(perl -I$HOME/foo/lib/perl5 -Mlocal::lib=$HOME/foo)' >>~/.bashrc
 
-If you want to install multiple Perl module environments, say for application evelopment, 
+If you want to install multiple Perl module environments, say for application evelopment,
 install local::lib globally and then:
 
     $ cd ~/mydir1
@@ -379,10 +379,10 @@ install local::lib globally and then:
     $ cd ../mydir2
     ... REPEAT ...
 
-For multiple environments for multiple apps you may need to include a modified version of 
+For multiple environments for multiple apps you may need to include a modified version of
 the C<< use FindBin >> instructions in the "In code" sample above. If you did something like
 the above, you have a set of Perl modules at C<< ~/mydir1/lib >>. If you have a script at
-C<< ~/mydir1/scripts/myscript.pl >>, you need to tell it where to find the modules you installed 
+C<< ~/mydir1/scripts/myscript.pl >>, you need to tell it where to find the modules you installed
 for it at C<< ~/mydir1/lib >>.
 
 In C<< ~/mydir1/scripts/myscript.pl >>:
